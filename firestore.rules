@@ -1,0 +1,74 @@
+rules_version = '2';
+
+// ---------------------------------------------------------------------
+// Security model
+// ---------------------------------------------------------------------
+// This is a two-person app: a "household" is just a doc listing the two
+// email addresses allowed in. There are no roles — either member can
+// read and write everything in their own household.
+//
+//   householdMembers/{emailLower} -> { householdId }
+//     Lets a signed-in user find which household they belong to without
+//     needing a collection query (each doc is keyed by the owning
+//     email, so the rule below is a simple ID match).
+//
+//   households/{householdId} -> { name, memberEmails: [a, b], createdAt }
+//     /weeks/{mondayDate}    -> the planner, one doc per week
+//     /shoppingList/{itemId} -> shared shopping list items
+//     /recipes/{recipeId}    -> saved recipes
+// ---------------------------------------------------------------------
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function myEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function household(householdId) {
+      return get(/databases/$(database)/documents/households/$(householdId)).data;
+    }
+
+    function isMember(householdId) {
+      return signedIn() && myEmail() in household(householdId).memberEmails;
+    }
+
+    match /households/{householdId} {
+      allow read, update: if isMember(householdId);
+      // Creating a household: you must be one of the exactly-two emails
+      // on it, and there must be exactly two (this app is for a couple,
+      // not a general group).
+      allow create: if signedIn()
+        && myEmail() in request.resource.data.memberEmails
+        && request.resource.data.memberEmails.size() == 2;
+
+      match /weeks/{weekId} {
+        allow read, write: if isMember(householdId);
+      }
+      match /shoppingList/{itemId} {
+        allow read, write: if isMember(householdId);
+      }
+      match /recipes/{recipeId} {
+        allow read, write: if isMember(householdId);
+      }
+    }
+
+    // A member can always read their own membership doc. Creating one
+    // requires the target email to actually be a member of the household
+    // it points at, and the requester must be a member of that same
+    // household too — so you can only ever create your own mapping doc,
+    // or your partner's while setting the household up for the first
+    // time (see household.js: createHousehold()).
+    match /householdMembers/{email} {
+      allow read: if signedIn() && myEmail() == email;
+      allow create: if signedIn()
+        && email in household(request.resource.data.householdId).memberEmails
+        && myEmail() in household(request.resource.data.householdId).memberEmails;
+      allow update, delete: if false;
+    }
+  }
+}

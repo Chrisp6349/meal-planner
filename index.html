@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Meal Planner — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/meals.css">
+<meta name="theme-color" content="#C1592B">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Meals">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+  .login-error{display:none;background:#FBEAE9;color:#B3261E;font-size:13px;padding:10px 12px;border-radius:var(--r-sm);margin-bottom:16px;}
+  .login-error.show{display:block;}
+  .reset-panel{display:none;}
+  .reset-panel.show{display:block;}
+  .login-card.reset-mode #loginFields, .login-card.reset-mode #loginBtn,
+  .login-card.reset-mode .forgot-link, .login-card.reset-mode #loginSub{display:none;}
+  .reset-msg{display:none;font-size:13px;padding:10px 12px;border-radius:var(--r-sm);margin-bottom:16px;}
+  .reset-msg.show{display:block;background:var(--sage-100);color:var(--sage-600);}
+  .back-link{background:none;border:none;color:var(--ink-500);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;text-decoration:underline;margin-top:12px;}
+</style>
+</head>
+<body>
+  <div class="login-card" id="loginCard">
+    <div class="login-mark">🍽️</div>
+    <h1>Sign in to Meal Planner</h1>
+
+    <form id="loginForm">
+      <p class="sub" id="loginSub">For the two of you only.</p>
+      <div class="login-error" id="loginError"></div>
+      <div id="loginFields">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" required autocomplete="current-password">
+        </div>
+      </div>
+      <button class="forgot-link" type="button" id="forgotBtn">Forgot password?</button>
+      <button class="btn btn-primary btn-block" type="submit" id="loginBtn">Sign in</button>
+    </form>
+
+    <form class="reset-panel" id="resetPanel">
+      <p class="sub" style="margin-top:0;">Enter your email and we'll send you a link to reset your password.</p>
+      <div class="reset-msg" id="resetMsg"></div>
+      <div class="field">
+        <label for="resetEmail">Email</label>
+        <input type="email" id="resetEmail" autocomplete="username">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" id="resetSendBtn">Send reset link</button>
+      <button class="back-link" type="button" id="backToLoginBtn">Back to sign in</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { login, sendPasswordReset } from "./js/household.js";
+    import { isConfigured } from "./js/firebase-init.js";
+
+    const card = document.getElementById("loginCard");
+    const form = document.getElementById("loginForm");
+    const errBox = document.getElementById("loginError");
+    const btn = document.getElementById("loginBtn");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    if (!isConfigured) {
+      card.innerHTML = `<div class="login-mark">🍽️</div><h1>Set up needed</h1>
+        <p class="sub">Firebase isn't configured yet. Open <code>js/firebase-config.js</code>
+        and paste in your project's config — see <code>README.md</code> for the steps.</p>`;
+    }
+
+    async function attemptLogin(email, password) {
+      errBox.classList.remove("show");
+      btn.disabled = true;
+      btn.textContent = "Signing in…";
+      try {
+        await login(email, password);
+        window.location.href = "planner.html";
+      } catch (err) {
+        errBox.textContent = "Couldn't sign in — check your email and password.";
+        errBox.classList.add("show");
+        btn.disabled = false;
+        btn.textContent = "Sign in";
+      }
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      attemptLogin(emailInput.value.trim(), passwordInput.value);
+    });
+
+    const resetPanel = document.getElementById("resetPanel");
+    const resetMsg = document.getElementById("resetMsg");
+    const resetEmailInput = document.getElementById("resetEmail");
+    const resetSendBtn = document.getElementById("resetSendBtn");
+
+    function showResetPanel() {
+      card.classList.add("reset-mode");
+      resetPanel.classList.add("show");
+      resetMsg.classList.remove("show");
+      resetEmailInput.value = emailInput.value.trim();
+    }
+    function hideResetPanel() {
+      card.classList.remove("reset-mode");
+      resetPanel.classList.remove("show");
+    }
+
+    document.getElementById("forgotBtn").addEventListener("click", showResetPanel);
+    document.getElementById("backToLoginBtn").addEventListener("click", hideResetPanel);
+
+    resetPanel.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = resetEmailInput.value.trim();
+      if (!email) return;
+      resetSendBtn.disabled = true;
+      try {
+        await sendPasswordReset(email);
+      } catch (err) {
+        if (err.code !== "auth/user-not-found") {
+          resetMsg.textContent = "Couldn't send that — check the email address and try again.";
+          resetMsg.classList.add("show");
+          resetSendBtn.disabled = false;
+          return;
+        }
+      }
+      resetMsg.textContent = "If that email has an account, a reset link is on its way.";
+      resetMsg.classList.add("show");
+      resetSendBtn.disabled = false;
+    });
+  </script>
+</body>
+</html>

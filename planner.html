@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>This Week — Meal Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/meals.css">
+<meta name="theme-color" content="#C1592B">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Meals">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+</head>
+<body>
+  <div id="navRoot"></div>
+  <div class="page-wrap">
+    <div class="page-head">
+      <div>
+        <h1>This Week</h1>
+        <p class="sub">Monday to Sunday — fill in what you're having each day.</p>
+      </div>
+      <span id="saveStatus" class="sub" style="color:var(--sage-600);"></span>
+    </div>
+
+    <div class="week-nav">
+      <button class="icon-btn" id="prevWeekBtn" aria-label="Previous week">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="week-label" id="weekLabel"></div>
+      <button class="btn btn-ghost btn-sm" id="todayBtn">This week</button>
+      <button class="icon-btn" id="nextWeekBtn" aria-label="Next week">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="week-grid" id="weekGrid"></div>
+  </div>
+
+  <div id="modalRoot"></div>
+
+  <script type="module" src="js/planner.js"></script>
+</body>
+</html>

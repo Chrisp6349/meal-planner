@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Meal Planner — Set up your household</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/meals.css">
+<meta name="theme-color" content="#C1592B">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Meals">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+  .login-card{max-width:440px;}
+</style>
+</head>
+<body>
+  <div class="login-card" id="setupCard">
+    <div class="login-mark">🍽️</div>
+    <h1>Set up your household</h1>
+    <p class="sub">You're signed in but not part of a household yet. Create one and add your partner's
+      email — they'll land here too the first time they sign in, but since you're setting it up first,
+      just enter their email now and they'll be in as soon as they sign in.</p>
+
+    <div class="banner error" id="setupError" style="display:none;"></div>
+
+    <form id="setupForm">
+      <div class="field">
+        <label for="myEmail">Your email</label>
+        <input type="email" id="myEmail" disabled>
+      </div>
+      <div class="field">
+        <label for="householdName">Household name</label>
+        <input type="text" id="householdName" placeholder="e.g. The Parrish Kitchen" required>
+      </div>
+      <div class="field">
+        <label for="partnerEmail">Partner's email</label>
+        <input type="email" id="partnerEmail" placeholder="their@email.com" required>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" id="setupBtn">Create household</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { requireUser, createHousehold } from "./js/household.js";
+
+    const user = await requireUser();
+    document.getElementById("myEmail").value = user.email;
+
+    const form = document.getElementById("setupForm");
+    const errBox = document.getElementById("setupError");
+    const btn = document.getElementById("setupBtn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errBox.style.display = "none";
+      btn.disabled = true;
+      btn.textContent = "Creating…";
+      try {
+        await createHousehold(
+          user.email,
+          document.getElementById("partnerEmail").value,
+          document.getElementById("householdName").value.trim()
+        );
+        window.location.href = "planner.html";
+      } catch (err) {
+        errBox.textContent = err.message || "Couldn't create the household — check the email and try again.";
+        errBox.style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Create household";
+      }
+    });
+  </script>
+</body>
+</html>

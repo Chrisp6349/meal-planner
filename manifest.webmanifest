@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Meal Planner",
+  "short_name": "Meals",
+  "description": "Weekly meal planning, shopping list, and recipes for the two of you.",
+  "start_url": "./planner.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF4EA",
+  "theme_color": "#C1592B",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

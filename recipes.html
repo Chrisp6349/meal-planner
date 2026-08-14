@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Recipes — Meal Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/meals.css">
+<meta name="theme-color" content="#C1592B">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Meals">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+</head>
+<body>
+  <div id="navRoot"></div>
+  <div class="page-wrap">
+    <div class="page-head">
+      <div>
+        <h1>Recipes</h1>
+        <p class="sub">Saved recipes you can attach to any day on the planner.</p>
+      </div>
+      <button class="btn btn-primary btn-sm" id="addRecipeBtn">+ Add recipe</button>
+    </div>
+
+    <div id="recipeGrid" class="recipe-grid"></div>
+  </div>
+
+  <div id="modalRoot"></div>
+
+  <script type="module" src="js/recipes.js"></script>
+</body>
+</html>

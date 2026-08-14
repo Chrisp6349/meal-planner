@@ -1,0 +1,257 @@
+/* =====================================================================
+   Meal Planner — design system
+   A warm, personal "kitchen" look — terracotta accents, soft cream
+   canvas — deliberately distinct from any clinical/work-app styling.
+   ===================================================================== */
+
+:root{
+  --ink-900:#2B2118; --ink-700:#4A3B2E; --ink-500:#7A6A5A; --ink-300:#B5A797;
+  --ink-150:#E9DFD2; --ink-100:#F2EAE0; --canvas:#FBF4EA; --surface:#FFFFFF;
+
+  --terracotta-700:#9C4222; --terracotta-600:#C1592B; --terracotta-500:#D97A4D;
+  --terracotta-100:#FBE7DA; --terracotta-50:#FDF3EC;
+
+  --sage-600:#4C8B5B; --sage-100:#E4F1E6;
+  --amber-600:#C1892B; --amber-100:#FBF1DC;
+
+  --shadow-sm:0 1px 2px rgba(43,33,24,.06);
+  --shadow-md:0 4px 14px rgba(43,33,24,.08);
+  --shadow-lg:0 14px 36px rgba(43,33,24,.14);
+
+  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-pill:999px;
+
+  --font-display:'Manrope',sans-serif;
+  --font-body:'Inter',sans-serif;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;background:var(--canvas);color:var(--ink-900);font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(1000px 480px at 100% -10%, var(--terracotta-50) 0%, transparent 55%),
+    radial-gradient(800px 420px at -8% 0%, var(--terracotta-50) 0%, transparent 50%),
+    var(--canvas);
+}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;letter-spacing:-0.01em;color:var(--ink-900);}
+a{color:inherit;}
+::selection{background:var(--terracotta-100);color:var(--terracotta-700);}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+:focus{outline:none;}
+:focus-visible{outline:2px solid var(--terracotta-500);outline-offset:2px;border-radius:2px;}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--font-body);font-weight:600;font-size:13.5px;line-height:1;
+  padding:10px 16px;border-radius:var(--r-sm);border:1px solid transparent;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,transform .1s ease;white-space:nowrap;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--terracotta-600);color:#fff;}
+.btn-primary:hover{background:var(--terracotta-700);}
+.btn-ghost{background:transparent;color:var(--ink-700);border-color:var(--ink-150);}
+.btn-ghost:hover{background:var(--ink-100);}
+.btn-danger{background:transparent;color:#B3261E;border-color:#F1D3D0;}
+.btn-danger:hover{background:#FBEAE9;}
+.btn-sm{padding:6px 12px;font-size:12.5px;}
+.btn-block{width:100%;justify-content:center;}
+.btn[disabled]{opacity:.55;cursor:default;}
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;
+  border-radius:var(--r-sm);border:1px solid var(--ink-150);background:var(--surface);
+  color:var(--ink-700);cursor:pointer;flex-shrink:0;
+}
+.icon-btn:hover{background:var(--ink-100);}
+.icon-btn svg{width:16px;height:16px;}
+
+/* ---------- Fields ---------- */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px;}
+input[type=text],input[type=email],input[type=password],textarea,select{
+  width:100%;font-family:var(--font-body);font-size:16px;color:var(--ink-900);
+  background:var(--surface);border:1px solid var(--ink-150);border-radius:var(--r-sm);
+  padding:11px 12px;transition:border-color .15s ease;
+}
+/* 16px is deliberate, not just "bigger text" — anything smaller makes
+   iOS Safari auto-zoom the page on focus, which on a form-heavy app like
+   this (used only on phones) means every tap into a field yanks the
+   viewport around. */
+input:focus,textarea:focus,select:focus{border-color:var(--terracotta-500);}
+textarea{resize:vertical;font-family:var(--font-body);line-height:1.5;}
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--surface);border:1px solid var(--ink-150);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);padding:20px;
+}
+
+/* ---------- Top nav ---------- */
+.topnav{
+  display:flex;align-items:center;gap:8px;
+  padding:calc(12px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left));
+  border-bottom:1px solid var(--ink-150);
+  background:var(--surface);position:sticky;top:0;z-index:20;flex-wrap:wrap;
+}
+.topnav .brand{
+  display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;
+  font-size:16px;color:var(--ink-900);margin-right:10px;text-decoration:none;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.topnav .brand .mark{
+  width:32px;height:32px;border-radius:9px;background:var(--terracotta-600);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+}
+.topnav .nav-links{display:flex;gap:4px;flex:1;flex-wrap:wrap;}
+.topnav a.nav-link{
+  padding:8px 14px;border-radius:var(--r-pill);font-size:13.5px;font-weight:600;color:var(--ink-700);
+  text-decoration:none;
+}
+.topnav a.nav-link:hover{background:var(--ink-100);}
+.topnav a.nav-link.active{background:var(--terracotta-100);color:var(--terracotta-700);}
+.topnav .nav-right{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.topnav .who{font-size:12.5px;color:var(--ink-500);margin-right:4px;}
+
+/* Bottom tab bar — the primary nav on phones, hidden on wider screens
+   where the links live in .topnav .nav-links instead (see the media
+   query below). Fixed + safe-area padding so it clears the iPhone home
+   indicator instead of sitting under it. */
+.bottom-nav{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:30;
+  background:var(--surface);border-top:1px solid var(--ink-150);
+  padding:6px max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+  box-shadow:0 -2px 10px rgba(43,33,24,.05);
+}
+.bottom-nav .bn-link{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 4px 5px;border-radius:10px;color:var(--ink-500);text-decoration:none;
+  font-size:11px;font-weight:700;
+}
+.bottom-nav .bn-link svg{width:21px;height:21px;}
+.bottom-nav .bn-link.active{color:var(--terracotta-600);}
+
+.page-wrap{max-width:1080px;margin:0 auto;padding:22px 16px 48px;}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.page-head h1{font-size:22px;}
+.page-head p.sub{color:var(--ink-500);font-size:13.5px;margin:4px 0 0;}
+
+@media (min-width:701px){
+  .page-wrap{padding:28px 24px 64px;}
+  .page-head h1{font-size:24px;}
+}
+
+/* Phones: nav collapses to the bottom tab bar, top bar keeps just the
+   brand + sign out, and room is left at the bottom of the page so
+   content never sits under the fixed bar. */
+@media (max-width:700px){
+  .topnav .nav-links{display:none;}
+  .topnav .who{display:none;}
+  .bottom-nav{display:flex;}
+  .page-wrap{padding-bottom:calc(78px + env(safe-area-inset-bottom));}
+}
+
+/* ---------- Week grid ---------- */
+.week-nav{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.week-nav .week-label{font-weight:700;font-family:var(--font-display);font-size:15px;flex:1;text-align:center;}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;}
+@media (max-width:900px){.week-grid{grid-template-columns:1fr;}}
+.day-card{
+  background:var(--surface);border:1px solid var(--ink-150);border-radius:var(--r-md);
+  padding:14px;display:flex;flex-direction:column;gap:8px;min-height:150px;
+}
+.day-card.is-today{border-color:var(--terracotta-500);box-shadow:0 0 0 3px var(--terracotta-100);}
+.day-card .day-name{font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--ink-700);}
+.day-card .day-date{font-size:11.5px;color:var(--ink-500);margin-top:-6px;}
+.day-card textarea{flex:1;min-height:72px;font-size:15px;}
+.recipe-chip{
+  display:inline-flex;align-items:center;gap:6px;background:var(--sage-100);color:var(--sage-600);
+  font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:var(--r-pill);cursor:pointer;border:none;
+  align-self:flex-start;
+}
+.recipe-chip:hover{filter:brightness(.96);}
+.add-recipe-link{
+  background:none;border:none;color:var(--terracotta-600);font-size:12.5px;font-weight:600;
+  cursor:pointer;padding:8px 0;text-align:left;
+}
+
+/* ---------- Shopping list ---------- */
+.shop-add{display:flex;gap:8px;margin-bottom:18px;}
+.shop-add input{flex:1;min-width:0;}
+.shop-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.shop-item{
+  display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);
+  border:1px solid var(--ink-150);border-radius:var(--r-md);cursor:pointer;
+}
+/* The whole row toggles checked (a bigger, easier target on a phone
+   than a 20px box would be) — the delete button stops that click from
+   bubbling so it can do its own thing. */
+.shop-item .chk{
+  width:22px;height:22px;border-radius:6px;border:2px solid var(--ink-300);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:var(--surface);pointer-events:none;
+}
+.shop-item.checked .chk{background:var(--sage-600);border-color:var(--sage-600);}
+.shop-item .txt{flex:1;font-size:15px;}
+.shop-item.checked .txt{color:var(--ink-300);text-decoration:line-through;}
+.shop-item .del{
+  background:none;border:none;color:var(--ink-300);cursor:pointer;
+  padding:8px;margin:-8px;display:flex;flex-shrink:0;
+}
+.shop-item .del:hover{color:#B3261E;}
+.shop-empty{color:var(--ink-500);font-size:13.5px;padding:24px;text-align:center;}
+
+/* ---------- Recipes ---------- */
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.recipe-card{
+  background:var(--surface);border:1px solid var(--ink-150);border-radius:var(--r-md);
+  padding:16px;cursor:pointer;text-decoration:none;display:block;color:inherit;
+}
+.recipe-card:hover{border-color:var(--terracotta-500);}
+.recipe-card h3{font-size:15px;margin-bottom:6px;}
+.recipe-card p{font-size:12.5px;color:var(--ink-500);margin:0;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.recipe-body{white-space:pre-wrap;font-size:14.5px;line-height:1.65;color:var(--ink-700);}
+
+/* ---------- History ---------- */
+.history-list{display:flex;flex-direction:column;gap:10px;}
+.history-row{
+  display:flex;align-items:center;gap:6px 16px;padding:14px 18px;background:var(--surface);
+  border:1px solid var(--ink-150);border-radius:var(--r-md);text-decoration:none;color:inherit;
+  flex-wrap:wrap;
+}
+.history-row:hover{border-color:var(--terracotta-500);}
+.history-row .hr-week{font-weight:700;font-family:var(--font-display);font-size:13.5px;min-width:150px;flex-shrink:0;}
+.history-row .hr-meals{flex:1;min-width:100%;color:var(--ink-500);font-size:13px;}
+@media (min-width:560px){
+  .history-row .hr-meals{min-width:0;}
+}
+
+/* ---------- Modal ---------- */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:center;
+  justify-content:center;padding:12px;z-index:100;
+}
+.modal{
+  background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);
+  width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding:20px;
+  padding-bottom:max(20px, env(safe-area-inset-bottom));
+}
+@media (min-width:480px){.modal{padding:24px;}}
+.modal h2{font-size:18px;margin-bottom:16px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
+
+/* ---------- Empty / loading / errors ---------- */
+.empty-state{text-align:center;padding:48px 20px;color:var(--ink-500);}
+.banner{padding:12px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:16px;}
+.banner.error{background:#FBEAE9;color:#B3261E;}
+.banner.info{background:var(--terracotta-50);color:var(--terracotta-700);}
+
+/* ---------- Login card ---------- */
+.login-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--ink-150);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:26px 22px;margin:0 auto;}
+@media (min-width:420px){.login-card{padding:36px 32px;}}
+.login-mark{width:44px;height:44px;border-radius:12px;background:var(--terracotta-600);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;}
+.login-card h1{font-size:21px;margin-bottom:6px;}
+.login-card p.sub{color:var(--ink-500);font-size:13.5px;margin:0 0 22px;}
+.forgot-link{background:none;border:none;color:var(--terracotta-600);font-size:12.5px;font-weight:600;
+  cursor:pointer;padding:0;text-decoration:underline;margin:-10px 0 16px;display:block;}
