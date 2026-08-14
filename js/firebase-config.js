@@ -11,12 +11,12 @@
 // -----------------------------------------------------------------------
 
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCOaf3K6xe66oHr5lb73kPAws_Qn5yv9yE",
+  authDomain: "meal-planner-e11bc.firebaseapp.com",
+  projectId: "meal-planner-e11bc",
+  storageBucket: "meal-planner-e11bc.firebasestorage.app",
+  messagingSenderId: "796521182370",
+  appId: "1:796521182370:web:f59e8a74a4a5244a7813fb"
 };
 
 // Set to true automatically once the placeholder above has been replaced.
