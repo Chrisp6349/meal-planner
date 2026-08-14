@@ -5,7 +5,7 @@
 // -----------------------------------------------------------------------
 
 import { requireHousehold } from "./household.js";
-import { renderNav, escapeHtml } from "./nav.js";
+import { renderNav, escapeHtml, linkify } from "./nav.js";
 import { getRecipe, deleteRecipe } from "./recipes-data.js";
 
 const { user, householdId, household } = await requireHousehold();
@@ -26,8 +26,8 @@ if (!recipeId) {
         <h1 style="font-size:20px;">${escapeHtml(recipe.title)}</h1>
         <button class="btn btn-danger btn-sm" id="deleteBtn">Delete</button>
       </div>
-      ${recipe.sourceUrl ? `<p class="sub" style="margin-bottom:14px;"><a href="${escapeHtml(recipe.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(recipe.sourceUrl)}</a></p>` : ""}
-      <div class="recipe-body">${escapeHtml(recipe.body)}</div>
+      ${recipe.sourceUrl ? `<p class="sub" style="margin-bottom:14px;word-break:break-word;"><a href="${escapeHtml(recipe.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(recipe.sourceUrl)}</a></p>` : ""}
+      <div class="recipe-body">${linkify(escapeHtml(recipe.body))}</div>
     `;
     document.getElementById("deleteBtn").addEventListener("click", async () => {
       if (!confirm(`Delete "${recipe.title}"? Any days it's attached to will just lose the link.`)) return;

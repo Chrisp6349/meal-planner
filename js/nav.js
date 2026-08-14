@@ -58,3 +58,20 @@ export function escapeHtml(str) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[c]));
 }
+
+// Turns bare URLs into clickable links. Must be called on text that's
+// already been through escapeHtml() — it only ever matches "http(s)://"
+// runs, so it can't reopen any HTML that escaping just closed off, and
+// entities like &amp; inside a query string decode back to the right
+// character in both the link text and the href.
+export function linkify(escapedHtml) {
+  return escapedHtml.replace(/(https?:\/\/[^\s<]+)/g, (url) => {
+    let trailing = "";
+    const m = url.match(/[).,!?;:]+$/);
+    if (m) {
+      trailing = m[0];
+      url = url.slice(0, -trailing.length);
+    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${trailing}`;
+  });
+}
