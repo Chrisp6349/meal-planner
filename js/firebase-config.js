@@ -27,5 +27,5 @@ export const isConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
 // key pair" (under "Web Push certificates"). Push notifications stay
 // silently unavailable (the bell icon just won't appear) until this is
 // filled in — nothing else in the app depends on it.
-export const vapidKey = "YOUR_VAPID_KEY";
+export const vapidKey = "BAftisNR0DYxgOiAYkxsSegTrPac5AgijOM_WEy9kAlV8QM-fTD6fG6qWge7ltHEufFi0Ci7rb7JVkRj9_LixtY";
 export const isPushConfigured = vapidKey !== "YOUR_VAPID_KEY";
