@@ -7,7 +7,7 @@
 // instead — see .topnav .nav-links / .bottom-nav in meals.css.
 // -----------------------------------------------------------------------
 
-import { logout } from "./household.js";
+import { logout, hardResetAndReload } from "./household.js";
 import { pushAvailability, notificationPermission, enablePush } from "./push.js";
 
 const ICONS = {
@@ -15,7 +15,8 @@ const ICONS = {
   shopping: `<circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3h2l2.3 12.1a2 2 0 002 1.6h8.5a2 2 0 001.95-1.57L21 8H6.2"/>`,
   recipes: `<path d="M4 5.2A2.2 2.2 0 016.2 3H20v15H6.2A2.2 2.2 0 004 15.8V5.2z"/><path d="M4 15.8A2.2 2.2 0 016.2 13.6H20"/>`,
   history: `<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 1.9"/>`,
-  bell: `<path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.77-.98 2.4L4 15.6V17h16v-1.4l-2.02-2.02a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 20a2.5 2.5 0 005 0"/>`
+  bell: `<path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.77-.98 2.4L4 15.6V17h16v-1.4l-2.02-2.02a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 20a2.5 2.5 0 005 0"/>`,
+  reset: `<path d="M21 12a9 9 0 11-3.02-6.7"/><path d="M21 4v6h-6"/>`
 };
 
 const LINKS = [
@@ -57,12 +58,18 @@ export function renderNav({ activePage, user, household, householdId }) {
       <div class="nav-right">
         <span class="who">${escapeHtml((user && user.email) || "")}</span>
         ${bellHtml}
+        <button class="icon-btn" id="navResetBtn" title="Something not working? Reset the app" aria-label="Reset app">${iconSvg("reset")}</button>
         <button class="btn btn-ghost btn-sm" id="navLogoutBtn">Sign out</button>
       </div>
     </nav>
     <nav class="bottom-nav">${bottomLinksHtml}</nav>`;
 
   document.getElementById("navLogoutBtn").addEventListener("click", logout);
+  document.getElementById("navResetBtn").addEventListener("click", () => {
+    if (confirm("Reset the app on this device? This clears anything stuck locally and signs you out — nothing on the server (your plans, list, or recipes) is touched.")) {
+      hardResetAndReload();
+    }
+  });
 
   const bellBtn = document.getElementById("navBellBtn");
   if (bellBtn) {
