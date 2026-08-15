@@ -1,0 +1,11 @@
+{
+  "name": "meal-planner-functions",
+  "private": true,
+  "description": "Sends a push notification to the other household member when the week plan, shopping list, or recipe box changes.",
+  "engines": { "node": "20" },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^5.1.0"
+  }
+}

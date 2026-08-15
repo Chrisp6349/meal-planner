@@ -10,7 +10,7 @@ import { db, collection, getDocs, query, orderBy, documentId } from "./firebase-
 import { DAY_KEYS, DAY_SHORT, parseWeekId, formatWeekLabel, mondayOf, weekId } from "./dates.js";
 
 const { user, householdId, household } = await requireHousehold();
-renderNav({ activePage: "history", user, household });
+renderNav({ activePage: "history", user, household, householdId });
 
 const listEl = document.getElementById("historyList");
 const currentWeekId = weekId(mondayOf(new Date()));

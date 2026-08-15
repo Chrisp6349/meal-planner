@@ -103,3 +103,52 @@ this — the next time *they* sign in, they'll already be part of it.
 Everything is scoped to your household by email address — see
 `firestore.rules` for exactly how access is controlled. There's no admin
 role, no other users: just the two emails on the household record.
+
+## 8. Push notifications (optional)
+
+Lets each of you get a real notification — buzzes the phone even with
+the app closed — when the other one changes the week plan, shopping
+list, or recipe box. This is the one part of the setup that needs a bit
+more than the Firebase console.
+
+**a. Upgrade to the Blaze plan.** Sending notifications runs through a
+Cloud Function, and Firebase won't deploy any Cloud Function on the free
+Spark plan. This is **per project** — if you're on Blaze elsewhere for
+something else, that doesn't carry over here. In the Firebase console,
+bottom-left corner shows your current plan; click **Upgrade** and switch
+to **Blaze**. For two people's usage this stays firmly within Blaze's
+free monthly quota — expect $0 actual cost — but Firebase does require a
+card on file to enable it at all.
+
+**b. Generate a Web Push key.** Project settings (gear icon, top of the
+left sidebar) → **Cloud Messaging** tab → under **Web configuration**,
+click **Generate key pair**. Copy the key it shows you.
+
+**c. Add it to the app.** Open `js/firebase-config.js` and replace:
+
+```js
+export const vapidKey = "YOUR_VAPID_KEY";
+```
+
+with the key from step b, then commit and push (or deploy) that change.
+
+**d. Deploy the Cloud Function.** This needs the Firebase CLI on a
+computer (not just the console):
+
+```bash
+npm install -g firebase-tools   # if you don't already have it
+firebase login
+firebase use --add              # pick this project, once
+firebase deploy --only functions
+```
+
+**e. Turn it on in the app.** Open the app and tap the bell icon in the
+top bar. On iPhone, this only works once the app has been **added to
+your Home Screen** (Safari → Share → Add to Home Screen) — a plain
+Safari tab can't ask for notification permission at all; tapping the
+bell before that will tell you as much. Do this once on each of your
+phones.
+
+That's it from then on — any change either of you makes fires a
+notification to the other's phone(s), tapping it opens straight to the
+relevant page.

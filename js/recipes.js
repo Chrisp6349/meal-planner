@@ -8,7 +8,7 @@ import { renderNav, escapeHtml } from "./nav.js";
 import { listRecipes, addRecipe } from "./recipes-data.js";
 
 const { user, householdId, household } = await requireHousehold();
-renderNav({ activePage: "recipes", user, household });
+renderNav({ activePage: "recipes", user, household, householdId });
 
 const gridEl = document.getElementById("recipeGrid");
 const modalRoot = document.getElementById("modalRoot");

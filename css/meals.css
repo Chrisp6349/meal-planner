@@ -64,6 +64,8 @@ a{color:inherit;}
 }
 .icon-btn:hover{background:var(--ink-100);}
 .icon-btn svg{width:16px;height:16px;}
+.bell-btn.on{background:var(--terracotta-100);border-color:var(--terracotta-100);color:var(--terracotta-600);}
+.bell-btn.on svg{fill:var(--terracotta-600);}
 
 /* ---------- Fields ---------- */
 .field{margin-bottom:14px;}

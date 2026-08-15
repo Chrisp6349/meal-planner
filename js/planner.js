@@ -12,7 +12,7 @@ import { DAY_KEYS, DAY_LABELS, mondayOf, addDays, weekId, formatWeekLabel, forma
 import { listRecipes, addRecipe } from "./recipes-data.js";
 
 const { user, householdId, household } = await requireHousehold();
-renderNav({ activePage: "planner", user, household });
+renderNav({ activePage: "planner", user, household, householdId });
 
 const params = new URLSearchParams(window.location.search);
 const requestedWeek = params.get("week");
@@ -97,7 +97,7 @@ async function saveDay(dayKey, dayObj) {
   weekData[dayKey] = dayObj;
   saveStatusEl.textContent = "Saving…";
   try {
-    await setDoc(weekRef(currentMonday), { [dayKey]: dayObj, updatedAt: serverTimestamp() }, { merge: true });
+    await setDoc(weekRef(currentMonday), { [dayKey]: dayObj, updatedAt: serverTimestamp(), updatedBy: user.email }, { merge: true });
     saveStatusEl.textContent = "Saved";
     setTimeout(() => { if (saveStatusEl.textContent === "Saved") saveStatusEl.textContent = ""; }, 1500);
   } catch (err) {

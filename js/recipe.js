@@ -9,7 +9,7 @@ import { renderNav, escapeHtml, linkify } from "./nav.js";
 import { getRecipe, deleteRecipe } from "./recipes-data.js";
 
 const { user, householdId, household } = await requireHousehold();
-renderNav({ activePage: "recipes", user, household });
+renderNav({ activePage: "recipes", user, household, householdId });
 
 const cardEl = document.getElementById("recipeCard");
 const recipeId = new URLSearchParams(window.location.search).get("id");

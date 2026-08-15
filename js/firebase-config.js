@@ -21,3 +21,11 @@ export const firebaseConfig = {
 
 // Set to true automatically once the placeholder above has been replaced.
 export const isConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+// Optional: only needed for push notifications. Firebase console ->
+// Project settings -> Cloud Messaging -> Web configuration -> "Generate
+// key pair" (under "Web Push certificates"). Push notifications stay
+// silently unavailable (the bell icon just won't appear) until this is
+// filled in — nothing else in the app depends on it.
+export const vapidKey = "YOUR_VAPID_KEY";
+export const isPushConfigured = vapidKey !== "YOUR_VAPID_KEY";

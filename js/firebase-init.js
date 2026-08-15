@@ -31,7 +31,7 @@ if (isConfigured) {
     enableMultiTabIndexedDbPersistence(db).catch(() => {});
   }
 }
-export { auth, db };
+export { app, auth, db };
 
 export {
   onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail,

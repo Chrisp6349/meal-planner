@@ -12,7 +12,7 @@ import {
 } from "./firebase-init.js";
 
 const { user, householdId, household } = await requireHousehold();
-renderNav({ activePage: "shopping", user, household });
+renderNav({ activePage: "shopping", user, household, householdId });
 
 const listCol = collection(db, "households", householdId, "shoppingList");
 const listEl = document.getElementById("shopList");
@@ -49,7 +49,7 @@ function render(items) {
   listEl.querySelectorAll("li.shop-item").forEach(li => {
     li.addEventListener("click", () => {
       const checked = li.classList.contains("checked");
-      updateDoc(doc(listCol, li.dataset.id), { checked: !checked });
+      updateDoc(doc(listCol, li.dataset.id), { checked: !checked, updatedBy: user.email });
     });
   });
   listEl.querySelectorAll("[data-delete]").forEach(btn => {

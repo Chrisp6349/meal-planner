@@ -16,6 +16,10 @@ rules_version = '2';
 //     /weeks/{mondayDate}    -> the planner, one doc per week
 //     /shoppingList/{itemId} -> shared shopping list items
 //     /recipes/{recipeId}    -> saved recipes
+//     /pushTokens/{token}    -> { email, token, createdAt } — one per
+//       device that's enabled notifications, doc ID is the token itself.
+//       No client ever reads these; only the Cloud Function (Admin SDK,
+//       which bypasses these rules) does, to know where to send a push.
 // ---------------------------------------------------------------------
 
 service cloud.firestore {
@@ -54,6 +58,11 @@ service cloud.firestore {
       }
       match /recipes/{recipeId} {
         allow read, write: if isMember(householdId);
+      }
+      match /pushTokens/{token} {
+        allow read: if false;
+        allow create, update: if isMember(householdId) && request.resource.data.email == myEmail();
+        allow delete: if isMember(householdId) && resource.data.email == myEmail();
       }
     }
 
