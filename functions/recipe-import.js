@@ -219,23 +219,49 @@ function buildBody(ingredients, instructions) {
   return parts.join("\n");
 }
 
+// Apple News (apple.news / news.apple.com) doesn't serve articles as
+// normal public web pages with embedded structured data the way
+// publishers' own sites do — the content lives inside Apple's News app
+// / reader instead, so a plain server-side fetch essentially never finds
+// a Recipe schema behind one of these links, whatever actually goes
+// wrong along the way (redirect to a generic landing page, a blocked
+// response, or just no matching content). Worth a specific, honest
+// explanation rather than the generic "couldn't find a recipe" message.
+function isAppleNewsUrl(hostname) {
+  return /(^|\.)apple\.news$/.test(hostname) || /(^|\.)news\.apple\.com$/.test(hostname);
+}
+
 async function importRecipeFromUrl(url) {
-  const html = await fetchHtmlSafely(url);
-  const node = findRecipeNode(extractJsonLdBlocks(html));
-  if (!node) {
-    throw new Error("Couldn't find a recipe on that page — try pasting it in manually instead.");
+  let hostname = "";
+  try {
+    hostname = new URL(url).hostname.toLowerCase();
+  } catch {
+    hostname = "";
   }
 
-  const title = textOf(node.name) || textOf(node.headline) || "Imported recipe";
-  const ingredients = extractIngredients(node);
-  const instructions = extractInstructions(node);
-  const body = buildBody(ingredients, instructions);
+  try {
+    const html = await fetchHtmlSafely(url);
+    const node = findRecipeNode(extractJsonLdBlocks(html));
+    if (!node) {
+      throw new Error("Couldn't find a recipe on that page — try pasting it in manually instead.");
+    }
 
-  if (!body.trim()) {
-    throw new Error("Found a recipe on that page but couldn't read its ingredients or method — try pasting it in manually instead.");
+    const title = textOf(node.name) || textOf(node.headline) || "Imported recipe";
+    const ingredients = extractIngredients(node);
+    const instructions = extractInstructions(node);
+    const body = buildBody(ingredients, instructions);
+
+    if (!body.trim()) {
+      throw new Error("Found a recipe on that page but couldn't read its ingredients or method — try pasting it in manually instead.");
+    }
+
+    return { title, body };
+  } catch (err) {
+    if (isAppleNewsUrl(hostname)) {
+      throw new Error("Apple News links can't be imported this way — that content lives inside Apple's News app rather than as a normal web page. Look for the original recipe's own link (often shown at the end of the article, or search its title on the publisher's site) and import that instead.");
+    }
+    throw err;
   }
-
-  return { title, body };
 }
 
 module.exports = { importRecipeFromUrl };
