@@ -5,7 +5,7 @@
 
 import { requireHousehold } from "./household.js";
 import { renderNav, escapeHtml } from "./nav.js";
-import { listRecipes, addRecipe } from "./recipes-data.js";
+import { listRecipes, addRecipe, importRecipeFromUrl } from "./recipes-data.js";
 
 const { user, householdId, household } = await requireHousehold();
 renderNav({ activePage: "recipes", user, household, householdId });
@@ -35,6 +35,14 @@ document.getElementById("addRecipeBtn").addEventListener("click", () => {
       <div class="modal">
         <h2>Add a recipe</h2>
         <div class="field">
+          <label for="importUrlInput">Import from a link</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="importUrlInput" placeholder="https://www.bbcgoodfood.com/recipes/…">
+            <button class="btn btn-ghost" type="button" id="importUrlBtn">Import</button>
+          </div>
+        </div>
+        <div style="text-align:center;color:var(--ink-500);font-size:12.5px;margin:14px 0;">or fill in the details yourself</div>
+        <div class="field">
           <label for="titleInput">Title</label>
           <input type="text" id="titleInput" placeholder="e.g. Chicken Tikka Masala">
         </div>
@@ -58,6 +66,28 @@ document.getElementById("addRecipeBtn").addEventListener("click", () => {
   const close = () => { modalRoot.innerHTML = ""; };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   document.getElementById("addCancelBtn").addEventListener("click", close);
+
+  document.getElementById("importUrlBtn").addEventListener("click", async () => {
+    const errBox = document.getElementById("addError");
+    const importBtn = document.getElementById("importUrlBtn");
+    const url = document.getElementById("importUrlInput").value.trim();
+    if (!url) return;
+    errBox.style.display = "none";
+    importBtn.disabled = true;
+    importBtn.textContent = "Importing…";
+    try {
+      const result = await importRecipeFromUrl(url);
+      document.getElementById("titleInput").value = result.title || "";
+      document.getElementById("bodyInput").value = result.body || "";
+      document.getElementById("sourceInput").value = url;
+    } catch (err) {
+      errBox.textContent = err.message || "Couldn't import that recipe — try pasting it in manually instead.";
+      errBox.style.display = "block";
+    } finally {
+      importBtn.disabled = false;
+      importBtn.textContent = "Import";
+    }
+  });
 
   document.getElementById("addSaveBtn").addEventListener("click", async () => {
     const errBox = document.getElementById("addError");

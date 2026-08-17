@@ -16,25 +16,32 @@ import {
   collection, getDocs, addDoc, query, where, orderBy, limit, documentId,
   onSnapshot, serverTimestamp, enableMultiTabIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import {
+  getFunctions, httpsCallable
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-functions.js";
 
 import { firebaseConfig, isConfigured } from "./firebase-config.js";
 
 export { isConfigured };
 
-let app, auth, db;
+let app, auth, db, functions;
 if (isConfigured) {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
+  // europe-west2 matches the region the Cloud Functions deploy to
+  // (functions/index.js) — must stay in sync or callable invocations 404.
+  functions = getFunctions(app, "europe-west2");
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   if (!isSafari) {
     enableMultiTabIndexedDbPersistence(db).catch(() => {});
   }
 }
-export { app, auth, db };
+export { app, auth, db, functions };
 
 export {
   onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
   doc, getDoc, setDoc, updateDoc, deleteDoc, writeBatch,
-  collection, getDocs, addDoc, query, where, orderBy, limit, documentId, onSnapshot, serverTimestamp
+  collection, getDocs, addDoc, query, where, orderBy, limit, documentId, onSnapshot, serverTimestamp,
+  httpsCallable
 };

@@ -5,7 +5,7 @@
 // -----------------------------------------------------------------------
 
 import {
-  db, collection, doc, getDoc, getDocs, addDoc, deleteDoc, query, orderBy, serverTimestamp
+  db, functions, httpsCallable, collection, doc, getDoc, getDocs, addDoc, deleteDoc, query, orderBy, serverTimestamp
 } from "./firebase-init.js";
 
 function recipesCol(householdId) {
@@ -35,4 +35,15 @@ export async function addRecipe(householdId, { title, body, sourceUrl }, userEma
 
 export async function deleteRecipe(householdId, recipeId) {
   await deleteDoc(doc(db, "households", householdId, "recipes", recipeId));
+}
+
+// Fetches a recipe page server-side (via the importRecipeFromUrl Cloud
+// Function) and pulls out its title/ingredients/method from the page's
+// own structured recipe data — works for most major recipe sites, not
+// just one. Returns { title, body } to pre-fill the add-recipe form for
+// review; never saves anything on its own.
+export async function importRecipeFromUrl(url) {
+  const callable = httpsCallable(functions, "importRecipeFromUrl");
+  const res = await callable({ url });
+  return res.data;
 }

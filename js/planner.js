@@ -9,7 +9,7 @@ import { requireHousehold } from "./household.js";
 import { renderNav, escapeHtml } from "./nav.js";
 import { db, doc, getDoc, setDoc, serverTimestamp } from "./firebase-init.js";
 import { DAY_KEYS, DAY_LABELS, mondayOf, addDays, weekId, formatWeekLabel, formatDayDate, isSameDay } from "./dates.js";
-import { listRecipes, addRecipe } from "./recipes-data.js";
+import { listRecipes, addRecipe, importRecipeFromUrl } from "./recipes-data.js";
 
 const { user, householdId, household } = await requireHousehold();
 renderNav({ activePage: "planner", user, household, householdId });
@@ -124,7 +124,15 @@ async function openRecipePicker(dayKey) {
             </select>
           </div>
           <div style="text-align:center;color:var(--ink-500);font-size:12.5px;margin:14px 0;">or paste a new one</div>
-        ` : `<p class="sub">No saved recipes yet — paste one in below.</p>`}
+        ` : ""}
+        <div class="field">
+          <label for="importUrlInput">Import from a link</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="importUrlInput" placeholder="https://www.bbcgoodfood.com/recipes/…">
+            <button class="btn btn-ghost" type="button" id="importUrlBtn">Import</button>
+          </div>
+        </div>
+        <div style="text-align:center;color:var(--ink-500);font-size:12.5px;margin:14px 0;">or fill in the details yourself</div>
         <div class="field">
           <label for="newRecipeTitle">Recipe title</label>
           <input type="text" id="newRecipeTitle" placeholder="e.g. Chicken Tikka Masala">
@@ -147,6 +155,29 @@ async function openRecipePicker(dayKey) {
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   document.getElementById("pickerCancelBtn").addEventListener("click", close);
 
+  let importedSourceUrl = "";
+  document.getElementById("importUrlBtn").addEventListener("click", async () => {
+    const errBox = document.getElementById("pickerError");
+    const importBtn = document.getElementById("importUrlBtn");
+    const url = document.getElementById("importUrlInput").value.trim();
+    if (!url) return;
+    errBox.style.display = "none";
+    importBtn.disabled = true;
+    importBtn.textContent = "Importing…";
+    try {
+      const result = await importRecipeFromUrl(url);
+      document.getElementById("newRecipeTitle").value = result.title || "";
+      document.getElementById("newRecipeBody").value = result.body || "";
+      importedSourceUrl = url;
+    } catch (err) {
+      errBox.textContent = err.message || "Couldn't import that recipe — try pasting it in manually instead.";
+      errBox.style.display = "block";
+    } finally {
+      importBtn.disabled = false;
+      importBtn.textContent = "Import";
+    }
+  });
+
   document.getElementById("pickerSaveBtn").addEventListener("click", async () => {
     const errBox = document.getElementById("pickerError");
     errBox.style.display = "none";
@@ -160,7 +191,7 @@ async function openRecipePicker(dayKey) {
         const chosen = recipesCache.find(r => r.id === selectedId);
         saveDay(dayKey, { ...weekData[dayKey], recipeId: chosen.id, recipeTitle: chosen.title });
       } else if (title && body) {
-        const newId = await addRecipe(householdId, { title, body }, user.email);
+        const newId = await addRecipe(householdId, { title, body, sourceUrl: importedSourceUrl }, user.email);
         recipesCache = null; // refetch next time so newly-added recipe shows up
         saveDay(dayKey, { ...weekData[dayKey], recipeId: newId, recipeTitle: title });
       } else {

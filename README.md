@@ -95,7 +95,15 @@ this — the next time *they* sign in, they'll already be part of it.
   you adds or checks off shows up for the other immediately.
 - `recipes.html` / `recipe.html` — the recipe box: paste a title and the
   recipe text (ingredients, method, however you have it), optionally with
-  a source link, and it's saved for reuse on any future day.
+  a source link, and it's saved for reuse on any future day. Or use
+  **"Import from a link"** to skip typing entirely — paste a recipe page's
+  URL and it fetches the title/ingredients/method for you to review
+  before saving. Works for most major recipe sites (it reads the same
+  structured data those sites embed for Google's recipe search results);
+  falls back to a friendly error for sites that don't have it, and you
+  paste manually instead. Needs the Cloud Function deployed — see
+  section 8 below, same `firebase deploy --only functions` command
+  picks up this function too, no separate step.
 - `history.html` — every week you've planned, most recent first, with a
   quick summary of what was on. Click through to see (or edit) any past
   week in full.

@@ -9,7 +9,9 @@
 // -----------------------------------------------------------------------
 
 const { onDocumentWritten } = require("firebase-functions/v2/firestore");
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const { importRecipeFromUrl } = require("./recipe-import");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -104,3 +106,24 @@ exports.onHouseholdChange = onDocumentWritten(
     }
   }
 );
+
+// Callable from the client (see js/recipes-data.js). Gated on being
+// signed in at all rather than a specific household — this project only
+// ever has the two of you as Firebase Auth users, so that's already
+// equivalent to "a household member," and this function doesn't touch
+// Firestore either way, just fetches+parses a page and hands the result
+// back to whoever asked.
+exports.importRecipeFromUrl = onCall({ region: "europe-west2", timeoutSeconds: 30 }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Sign in first.");
+  }
+  const url = ((request.data && request.data.url) || "").trim();
+  if (!url) {
+    throw new HttpsError("invalid-argument", "Missing a URL.");
+  }
+  try {
+    return await importRecipeFromUrl(url);
+  } catch (err) {
+    throw new HttpsError("internal", err.message || "Couldn't import that recipe.");
+  }
+});
